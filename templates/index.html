@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Interactive Memory Hierarchy and Cache Simulator">
+<title>MemoryLab | COA Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="#"><span class="logo">M</span><span>Memory<span class="blue">Lab</span><small>COMPUTER ARCHITECTURE</small></span></a>
+  <p class="nav-caption">WORKSPACE</p>
+  <a class="nav active" href="#overview">▦ &nbsp; Overview</a>
+  <a class="nav" href="#simulator">◈ &nbsp; Simulator</a>
+  <a class="nav" href="#analytics">⌁ &nbsp; Analytics</a>
+  <a class="nav" href="#trace">☷ &nbsp; Access trace</a>
+  <div class="sidebar-status"><i></i> Simulation engine ready</div>
+</aside>
+<main class="main">
+<header class="topbar"><div><p class="eyebrow">COMPUTER ORGANIZATION & ARCHITECTURE</p><h1>Memory Hierarchy Simulator</h1></div><span class="online">● SYSTEM ONLINE</span></header>
+<section class="hero" id="overview">
+ <div><p class="eyebrow">INTERACTIVE LEARNING ENVIRONMENT</p><h2>Understand memory.<br><span>Measure performance.</span></h2><p>Explore cache levels, mapping techniques and replacement policies with a configurable educational simulator.</p><a class="cta" href="#simulator">Launch simulator →</a></div>
+ <div class="hero-stack"><div class="cpu">CPU<br><small>PROCESSOR</small></div><div class="blocks"><div class="b l1">L1 <small>FASTEST</small></div><div class="b l2">L2 <small>FASTER</small></div><div class="b l3">L3 <small>FAST</small></div><div class="b ram">RAM <small>MAIN MEMORY</small></div><div class="b ssd">SSD <small>STORAGE</small></div></div></div>
+</section>
+<div class="section-title" id="simulator"><div><p class="eyebrow">01 / CONFIGURATION</p><h2>Simulation workspace</h2><p>Configure cache behavior and execute memory accesses.</p></div><span class="tag">PYTHON ENGINE</span></div>
+<section class="workspace">
+<div class="panel config">
+ <div class="panel-head"><b>⚙ &nbsp; Cache configuration</b><span>SETUP</span></div>
+ <label>Memory address sequence</label><textarea id="addresses" rows="3">0, 16, 32, 0, 48, 16, 64, 0, 32, 80, 16, 0</textarea><small class="hint">Decimal or hexadecimal addresses accepted. Example: 0x10, 32, 48</small>
+ <div class="two">
+  <div><label>Block size (bytes)</label><select id="blockSize"><option>4</option><option>8</option><option selected>16</option><option>32</option><option>64</option></select></div>
+  <div><label>Mapping technique</label><select id="mapping"><option value="direct">Direct mapped</option><option value="fully_associative">Fully associative</option><option value="set_associative" selected>Set associative</option></select></div>
+  <div><label>Associativity (ways)</label><select id="associativity"><option>1</option><option selected>2</option><option>4</option><option>8</option></select></div>
+  <div><label>Replacement policy</label><select id="replacement"><option>LRU</option><option>FIFO</option><option>Random</option></select></div>
+ </div>
+ <div class="rule"></div><div class="panel-head"><b>Memory hierarchy levels</b><span>CAPACITY / ACCESS TIME</span></div>
+ <div class="level"><input type="checkbox" id="enableL1" checked><b>L1 Cache</b><input type="number" id="l1Size" min="1" value="1"><small>KB</small><input type="number" id="l1Time" min="0" step=".1" value="1"><small>ns</small></div>
+ <div class="level"><input type="checkbox" id="enableL2" checked><b>L2 Cache</b><input type="number" id="l2Size" min="1" value="4"><small>KB</small><input type="number" id="l2Time" min="0" step=".1" value="4"><small>ns</small></div>
+ <div class="level"><input type="checkbox" id="enableL3" checked><b>L3 Cache</b><input type="number" id="l3Size" min="1" value="16"><small>KB</small><input type="number" id="l3Time" min="0" step=".1" value="12"><small>ns</small></div>
+ <label>Main memory miss penalty (ns)</label><input type="number" id="memoryPenalty" min="0" value="100">
+ <button id="runBtn" class="primary">▶ &nbsp; Run simulation</button><button id="compareBtn" class="secondary">⇄ &nbsp; Compare replacement algorithms</button><div id="error" class="error" role="alert"></div>
+</div>
+<div class="right">
+ <div class="panel"><div class="panel-head"><b>▤ &nbsp; Memory hierarchy</b><span>CONCEPTUAL VIEW</span></div>
+ <div class="hierarchy">
+  <div><span>CPU</span><i class="cpu-bar">Processor registers</i><small>~0.3 ns*</small></div>
+  <div><span>L1</span><i class="l1-bar">Level 1 cache</i><small>~1 ns*</small></div>
+  <div><span>L2</span><i class="l2-bar">Level 2 cache</i><small>~4 ns*</small></div>
+  <div><span>L3</span><i class="l3-bar">Level 3 cache</i><small>~12 ns*</small></div>
+  <div><span>RAM</span><i class="ram-bar">Main memory</i><small>~100 ns*</small></div>
+  <div><span>SSD</span><i class="ssd-bar">Secondary storage</i><small>μs – ms*</small></div>
+ </div><small class="hint">*Illustrative values only. Cache and memory timings are configurable in this simulator.</small></div>
+ <div class="panel formula"><p class="eyebrow">PERFORMANCE FORMULA</p><h3>Average Memory Access Time</h3><code>AMAT = Hit Time + (Miss Rate × Miss Penalty)</code><p>For multiple levels, the simulator reports average accumulated lookup latency per access.</p></div>
+</div>
+</section>
+<div class="section-title" id="analytics"><div><p class="eyebrow">02 / RESULTS</p><h2>Performance overview</h2><p>Run a simulation to populate the metrics.</p></div><span class="tag" id="runStatus">AWAITING RUN</span></div>
+<section class="metrics">
+ <div class="metric"><span>Total accesses</span><strong id="total">—</strong><small>Memory references</small></div>
+ <div class="metric green"><span>Hierarchy hit ratio</span><strong id="hit">—</strong><small>Found in any cache</small></div>
+ <div class="metric orange"><span>Main memory miss ratio</span><strong id="miss">—</strong><small>Reached main memory</small></div>
+ <div class="metric purple"><span>Average access time</span><strong id="amat">—</strong><small>Nanoseconds (ns)</small></div>
+</section>
+<section class="charts">
+ <div class="panel"><div class="panel-head"><b>Hit vs miss distribution</b><span>HIERARCHY</span></div><div class="chartbox"><canvas id="distribution"></canvas><div id="empty1" class="empty">Run a simulation to see results</div></div></div>
+ <div class="panel"><div class="panel-head"><b>Access latency per step</b><span>NANOSECONDS</span></div><div class="chartbox"><canvas id="latency"></canvas><div id="empty2" class="empty">Run a simulation to see results</div></div></div>
+</section>
+<section class="panel table-panel"><div class="panel-head"><b>Cache level statistics</b><span>PER-LEVEL BREAKDOWN</span></div><div class="scroll"><table><thead><tr><th>LEVEL</th><th>CAPACITY</th><th>HITS</th><th>MISSES</th><th>EVICTIONS</th><th>HIT RATIO</th><th>RESIDENT BLOCKS</th></tr></thead><tbody id="levelRows"><tr><td colspan="7" class="empty-row">Simulation results will appear here.</td></tr></tbody></table></div></section>
+<section class="panel table-panel"><div class="panel-head"><div><b>Replacement algorithm comparison</b><p class="hint">Compare LRU, FIFO and Random using the same settings.</p></div><span>ALGORITHM LAB</span></div><div class="scroll"><table><thead><tr><th>POLICY</th><th>HIT RATIO</th><th>MISS RATIO</th><th>AMAT</th><th>MAIN MEMORY ACCESSES</th></tr></thead><tbody id="compareRows"><tr><td colspan="5" class="empty-row">No comparison generated yet.</td></tr></tbody></table></div></section>
+<section class="panel table-panel" id="trace"><div class="panel-head"><div><b>Memory access trace</b><p class="hint">Step-by-step address lookup results.</p></div><span>EXECUTION LOG</span></div><div class="scroll"><table><thead><tr><th>STEP</th><th>ADDRESS</th><th>RESULT</th><th>FOUND AT</th><th>LATENCY</th><th>LEVEL LOOKUP</th></tr></thead><tbody id="traceRows"><tr><td colspan="6" class="empty-row">Run a simulation to inspect the trace.</td></tr></tbody></table></div></section>
+<footer><b>MemoryLab</b> · COA Mini Project <span>Python · Flask · JavaScript · Chart.js</span></footer>
+</main></div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>
